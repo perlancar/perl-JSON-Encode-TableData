@@ -42,21 +42,23 @@ sub encode_json {
     }
 
   ENCODE_AND_FORMAT: {
-        require UUID::Random;
         my $encoder = JSON::MaybeXS->new(allow_nonref=>1);
 
+        require UUID::Random;
         my $tag = UUID::Random::generate();
-        my $rows = $input->[2];
-        $input->[2] = $tag;
 
-        my $res_main = $encoder->encode($input);
-        my $res_array = "[\n";
-        for my $i (0..$#{$rows}) {
-            $res_array .= "   ".$encoder->encode($rows->[$i]).($i == $#{$rows} ? "" : ",")."\n";
+        my $rows = $input->[2];
+        {
+            local $input->[2] = $tag;
+            my $res_main = $encoder->encode($input);
+            my $res_array = "[\n";
+            for my $i (0..$#{$rows}) {
+                $res_array .= "   ".$encoder->encode($rows->[$i]).($i == $#{$rows} ? "" : ",")."\n";
+            }
+            $res_array .= "]";
+            $res_main =~ s/"$tag"/$res_array/;
+            return $res_main;
         }
-        $res_array .= "]";
-        $res_main =~ s/"$tag"/$res_array/;
-        return $res_main;
     }
 
   ENCODE_DIRECTLY:
