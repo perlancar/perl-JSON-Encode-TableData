@@ -89,6 +89,11 @@ L<App::td> to read more about table data). Its goal is to display each table row
 on a separate line for ease of grepping.
 
 
+=head1 FUNCTIONS
+
+=head2 encode_json
+
+
 =head1 SEE ALSO
 
 L<JSON::MaybeXS> and a plethora of other JSON encoders.
